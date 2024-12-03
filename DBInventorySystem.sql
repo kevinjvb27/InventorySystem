@@ -9,7 +9,7 @@ CREATE TABLE productos (
 	codigocategoria varchar NOT NULL,
 	fechacreacion timestamp NOT NULL,
 	modificacion timestamp NOT NULL,
-	FOREIGN KEY (codigocategoria) REFERENCES categorias(codigocategorias)
+	FOREIGN KEY (codigocategoria) REFERENCES categorias(codigocategoria)
 );
 
 --tabla categoría de producto script:
