@@ -5,6 +5,7 @@ CREATE TABLE productos (
 	descripcion varchar NULL,
 	precio float4 NOT NULL,
 	cantidad int NOT NULL,
+	activo boolean NOT NULL,
 	fechacreacion timestamp NOT NULL,
 	modificacion timestamp NOT NULL,
 	CONSTRAINT productos_pk PRIMARY KEY (codigoproducto),
