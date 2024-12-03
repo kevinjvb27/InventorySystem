@@ -1,5 +1,5 @@
 
-tabla producto script:
+--tabla producto script:
 CREATE TABLE public.productos (
 	id int NULL,
 	producto varchar NOT NULL,
