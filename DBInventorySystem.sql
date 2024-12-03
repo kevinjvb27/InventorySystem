@@ -6,10 +6,10 @@ CREATE TABLE productos (
 	precio float4 NOT NULL,
 	cantidad int NOT NULL,
 	activo boolean NOT NULL,
+	codigocategoria varchar NOT NULL,
 	fechacreacion timestamp NOT NULL,
 	modificacion timestamp NOT NULL,
-	CONSTRAINT productos_pk PRIMARY KEY (codigoproducto),
-	CONSTRAINT productos_categorias_fk FOREIGN KEY (codigocategoria) REFERENCES categorias(codigocategoria)
+	FOREIGN KEY (codigocategoria) REFERENCES categorias(codigocategorias)
 );
 
 --tabla categoría de producto script:
