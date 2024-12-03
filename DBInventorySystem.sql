@@ -1,7 +1,7 @@
 --tabla producto script:
 CREATE TABLE productos (
 	producto varchar NOT NULL,
-	codigoproducto varchar NOT NULL,
+	codigoproducto varchar NOT NULL PRIMARY KEY,
 	descripcion varchar NULL,
 	precio float4 NOT NULL,
 	cantidad int NOT NULL,
