@@ -14,11 +14,10 @@ CREATE TABLE productos (
 
 --tabla categoría de producto script:
 CREATE TABLE categorias (
+	codigocategoria varchar NOT NULL PRIMARY KEY,
 	categoria varchar NOT NULL,
-	codigocategoria varchar NOT NULL,
 	descripcion varchar NOT NULL,
 	fechacreacion timestamp NOT NULL,
-	CONSTRAINT categorias_pk PRIMARY KEY (codigocategoria)
 );
 
 --tabla movimientos script:
