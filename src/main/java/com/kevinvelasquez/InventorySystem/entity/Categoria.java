@@ -1,13 +1,10 @@
 package com.kevinvelasquez.InventorySystem.entity;
 
-// import java.security.Timestamp;
-import java.time.LocalDateTime;
-// import java.util.Objects;
 
+import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.Entity;
-// import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 

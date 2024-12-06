@@ -19,7 +19,7 @@ import com.kevinvelasquez.InventorySystem.entity.Categoria;
 import com.kevinvelasquez.InventorySystem.service.CategoriaService;
 
 @RestController
-@RequestMapping("/api/categoria")
+@RequestMapping("/api/categorias")
 public class CategoriaController {
 
   @Autowired
@@ -28,7 +28,6 @@ public class CategoriaController {
   // Create a new category
   @PostMapping()
   public ResponseEntity<Categoria> saveCategoria(@RequestBody Categoria categoria) {
-    System.out.println("Categoria: " + categoria);
     Categoria savedCategoria = categoriaService.saveCategoria(categoria);
     return ResponseEntity.ok(savedCategoria);
   }
