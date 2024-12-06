@@ -4,7 +4,6 @@ import com.kevinvelasquez.InventorySystem.entity.Usuario;
 import com.kevinvelasquez.InventorySystem.repository.UsuarioRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,8 +23,8 @@ public class UsuarioService {
             return usuarioRepository.findAll();
         } catch (Exception e) {
             throw new RuntimeException("Fallo al obtener usuarios: " + e.getMessage());
-    }
-        
+        }
+
     }
 
     public Usuario getUsuarioByUsername(String username) {
@@ -51,7 +50,7 @@ public class UsuarioService {
                 oldUsuario.setPassword(passwordEncoder.encode(updatedUsuario.getPassword()));
             }
             oldUsuario.setCodigorol(updatedUsuario.getCodigorol());
-            return usuarioRepository.save(usuario);
+            return usuarioRepository.save(oldUsuario);
         } catch (Exception e) {
             throw new RuntimeException("Fallo al actualizar el usuario: " + e.getMessage());
         }

@@ -19,7 +19,7 @@ import com.kevinvelasquez.InventorySystem.entity.Rol;
 import com.kevinvelasquez.InventorySystem.service.RolService;
 
 @RestController
-@RequestMapping("/api/rol")
+@RequestMapping("/api/roles")
 public class RolController {
 
   @Autowired
