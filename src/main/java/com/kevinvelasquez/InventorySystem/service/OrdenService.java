@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 import com.kevinvelasquez.InventorySystem.entity.DetalleOrden;
 import com.kevinvelasquez.InventorySystem.entity.Orden;
 import com.kevinvelasquez.InventorySystem.entity.Producto;
-import com.kevinvelasquez.InventorySystem.repository.DetalleOrdenRepository;
 import com.kevinvelasquez.InventorySystem.repository.OrdenRepository;
 import com.kevinvelasquez.InventorySystem.repository.ProductoRepository;
 
@@ -22,9 +21,6 @@ public class OrdenService {
 
     @Autowired
     private OrdenRepository ordenRepository;
-
-    @Autowired
-    private DetalleOrdenRepository detalleOrdenRepository;
 
     @Autowired
     private ProductoRepository productoRepository;
@@ -129,6 +125,7 @@ public class OrdenService {
             productoRepository.save(producto);
 
             nuevoDetalle.setOrden(orden);
+            nuevoDetalle.setPrecio(producto.getPrecio());
             detallesActuales.add(nuevoDetalle);
         }
 
