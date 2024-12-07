@@ -37,10 +37,6 @@ public class Rol {
     return fechacreacion;
   }
 
-  public void setCodigoRol(String codigorol) {
-    this.codigorol = codigorol;
-  }
-
   public void setRol(String rol) {
     this.rol = rol;
   }
