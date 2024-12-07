@@ -26,7 +26,6 @@ public class ProductoController {
   // Create a new category
   @PostMapping()
   public ResponseEntity<Producto> saveProducto(@RequestBody Producto producto) {
-    System.out.println("Producto: " + producto);
     Producto savedProducto = productoService.saveProducto(producto);
     return ResponseEntity.ok(savedProducto);
   }
