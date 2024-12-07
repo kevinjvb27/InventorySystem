@@ -3,7 +3,10 @@ package com.kevinvelasquez.InventorySystem.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.kevinvelasquez.InventorySystem.entity.DetalleOrden;
 import com.kevinvelasquez.InventorySystem.entity.Orden;
@@ -69,48 +72,67 @@ public class OrdenService {
     }
 
     @Transactional
-    public Orden updateOrden(Integer ordenId, String nuevoResponsable, List<DetalleOrden> nuevosDetalles) {
+    public Orden updateOrden(Integer ordenId, Orden nuevaOrden) {
         Orden orden = ordenRepository.findById(ordenId)
                 .orElseThrow(() -> new RuntimeException("Orden no encontrada"));
 
-        if (nuevoResponsable != null && !nuevoResponsable.equals(orden.getResponsable())) {
-            orden.setResponsable(nuevoResponsable);
+        if (!orden.getResponsable().equals(nuevaOrden.getResponsable())) {
+            throw new RuntimeException("El responsable no coincide con el original");
         }
 
-        for (DetalleOrden detalleActual : orden.getDetalleOrden()) {
+        Map<String, DetalleOrden> nuevosDetallesMap = nuevaOrden.getDetalleOrden().stream()
+                .collect(Collectors.toMap(DetalleOrden::getCodigoProducto, detalle -> detalle));
+
+        List<DetalleOrden> detallesActuales = orden.getDetalleOrden();
+        Iterator<DetalleOrden> iterator = detallesActuales.iterator();
+        while (iterator.hasNext()) {
+            DetalleOrden detalleActual = iterator.next();
             Producto producto = productoRepository.findById(detalleActual.getCodigoProducto())
                     .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
 
-            int cantidadAnterior = detalleActual.getCantidad();
-            if (cantidadAnterior > 0) {
-                producto.setCantidad(producto.getCantidad() + cantidadAnterior);
-                productoRepository.save(producto);
-            }
+            if (nuevosDetallesMap.containsKey(detalleActual.getCodigoProducto())) {
+                DetalleOrden nuevoDetalle = nuevosDetallesMap.get(detalleActual.getCodigoProducto());
 
-            orden.getDetalleOrden().remove(detalleActual);
-            detalleOrdenRepository.delete(detalleActual);
+                int diferencia = nuevoDetalle.getCantidad() - detalleActual.getCantidad();
+
+                if (diferencia != 0) {
+                    if (producto.getCantidad() < diferencia) {
+                        throw new RuntimeException(
+                                "Stock insuficiente para el producto: " + detalleActual.getCodigoProducto());
+                    }
+
+                    producto.setCantidad(producto.getCantidad() - diferencia);
+                    productoRepository.save(producto);
+
+                    detalleActual.setCantidad(nuevoDetalle.getCantidad());
+                }
+
+                nuevosDetallesMap.remove(detalleActual.getCodigoProducto());
+            } else {
+                producto.setCantidad(producto.getCantidad() + detalleActual.getCantidad());
+                productoRepository.save(producto);
+
+                iterator.remove();
+                // detalleOrdenRepository.delete(detalleActual); // NO FUNCIONA :(
+            }
         }
 
-        List<DetalleOrden> detallesFinales = nuevosDetalles.stream()
-                .filter(detalle -> detalle.getCantidad() > 0)
-                .map(detalle -> {
-                    Producto producto = productoRepository.findById(detalle.getCodigoProducto()).orElseThrow();
-                    int cantidadDisponible = producto.getCantidad();
-                    int cantidadARegistrar = Math.min(cantidadDisponible, detalle.getCantidad());
+        for (DetalleOrden nuevoDetalle : nuevosDetallesMap.values()) {
+            Producto producto = productoRepository.findById(nuevoDetalle.getCodigoProducto())
+                    .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
 
-                    producto.setCantidad(cantidadDisponible - cantidadARegistrar);
+            if (producto.getCantidad() < nuevoDetalle.getCantidad()) {
+                throw new RuntimeException("Stock insuficiente para el producto: " + nuevoDetalle.getCodigoProducto());
+            }
 
-                    DetalleOrden nuevoDetalle = new DetalleOrden();
-                    nuevoDetalle.setCodigoProducto(producto.getCodigoproducto());
-                    nuevoDetalle.setCantidad(cantidadARegistrar);
-                    nuevoDetalle.setPrecio(producto.getPrecio());
-                    nuevoDetalle.setOrden(orden);
+            producto.setCantidad(producto.getCantidad() - nuevoDetalle.getCantidad());
+            productoRepository.save(producto);
 
-                    productoRepository.save(producto);
-                    return nuevoDetalle;
-                }).toList();
+            nuevoDetalle.setOrden(orden);
+            detallesActuales.add(nuevoDetalle);
+        }
 
-        orden.setDetalleOrden(detallesFinales);
+        orden.setDetalleOrden(detallesActuales);
         return ordenRepository.save(orden);
     }
 

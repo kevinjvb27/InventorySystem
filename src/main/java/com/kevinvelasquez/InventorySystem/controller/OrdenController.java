@@ -46,8 +46,7 @@ public class OrdenController {
     @PutMapping("/{id}")
     public ResponseEntity<Orden> updateOrden(@PathVariable Integer id, @RequestBody Orden ordenActualizada) {
         try {
-            Orden orden = ordenService.updateOrden(id, ordenActualizada.getResponsable(),
-                    ordenActualizada.getDetalleOrden());
+            Orden orden = ordenService.updateOrden(id, ordenActualizada);
             return ResponseEntity.ok(orden);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
