@@ -2,6 +2,7 @@ package com.kevinvelasquez.InventorySystem.service;
 
 import com.kevinvelasquez.InventorySystem.entity.Usuario;
 import com.kevinvelasquez.InventorySystem.repository.UsuarioRepository;
+import com.kevinvelasquez.InventorySystem.security.JwtUtil;
 
 import java.util.List;
 
@@ -17,6 +18,9 @@ public class UsuarioService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     public List<Usuario> getAllUsuarios() {
         try {
@@ -39,6 +43,17 @@ public class UsuarioService {
         } catch (Exception e) {
             throw new RuntimeException("Fallo al guardar usuario: " + e.getMessage());
         }
+    }
+
+    public String login(Usuario usuario) {
+        Usuario existingUser = usuarioRepository.findById(usuario.getUsername())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        if (!passwordEncoder.matches(usuario.getPassword(), existingUser.getPassword())) {
+            throw new RuntimeException("Credenciales inválidas");
+        }
+
+        return jwtUtil.generateToken(existingUser.getUsername());
     }
 
     public Usuario updateUsuario(String username, Usuario updatedUsuario) {
