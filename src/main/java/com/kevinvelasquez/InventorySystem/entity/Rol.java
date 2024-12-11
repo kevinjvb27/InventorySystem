@@ -15,13 +15,13 @@ import jakarta.persistence.Table;
 public class Rol {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private String codigorol;
+  private Integer codigorol;
   private String rol;
   private String descripcion;
   @CreationTimestamp
   private LocalDateTime fechacreacion;
 
-  public String getCodigoRoles() {
+  public Integer getCodigoRoles() {
     return codigorol;
   }
 
